@@ -1,8 +1,9 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import html2canvas from 'html2canvas';
+import { v5 as uuidv5 } from 'uuid';
 import { jsPDF } from 'jspdf';
 import {useDropzone} from 'react-dropzone'
 
@@ -15,26 +16,45 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const CertificateTemplate = () => {
   const printRef = useRef();
-  const [certiData, setCertiData] = useState({
-    logo: "",
-    name: "Your Name",
-    heading: "certificate of completion",
-    eventName: "Machine Learning",
-    date: "31st March 2023",
-    subheading: "This certificate is awarded for successfully completing a course of",
-    signature1: "signature1",
-    signature2: "signature2",
-  })
+  const [name, setName] = useState("Your Name");
+  const [event, setEvent] = useState("Machine Learning");
+  const [heading, setHeading] = useState("certificate of completion");
+  const [date, setDate] = useState("31st March 2023");
+  const [subheading, setSubheading] = useState("This certificate is awarded for successfully completing a course of Machine Learning on 31st March 2023.");
+  const [signature1, setSignature1] = useState("signature1");
+  const [signature2, setSignature2] = useState("signature2");
+
+  const generateUUID = () => {
+    // Define a namespace UUID based on a unique string
+    const namespace = 'your-namespace-uuid';
+    const namespaceUUID = uuidv5(namespace, uuidv5.DNS);
+
+    
+    const timestamp = Date.now().toString();
+
+    // Generate UUID using the combination of variables and namespace UUID
+    const id = uuidv5(`${name}-${subheading}-${timestamp}`, namespaceUUID);
+
+    console.log(id);
+    return id;
+  }
+
+  const [uuid, setUuid] = useState(generateUUID);
+  useEffect(() => {
+    setUuid(generateUUID)
+  }, [name, subheading]);
+
   const [dropName, setDropName] = useState('');
   const [newAdded, setNewAdded] = useState([]);
 
   const [layout, setLayout] = useState([
     { i: 'logo', x: 0, y: 0, w: 1, h: 1},
-    { i: 'name', x: 2, y: 6, w: 2, h: 1},
+    { i: 'name', x: 2, y: 5, w: 2, h: 1},
     { i: 'heading', x: 1, y: 1, w: 4, h: 3 },
-    { i: 'subheading', x: 1, y: 8, w: 4, h: 1 },
-    { i: 'signature1', x: 4, y: 12, w: 1, h: 1},
-    { i: 'signature2', x: 1, y: 12, w: 1, h: 1},
+    { i: 'subheading', x: 1, y: 7, w: 4, h: 1 },
+    { i: 'signature1', x: 4, y: 11, w: 1, h: 1},
+    { i: 'signature2', x: 1, y: 11, w: 1, h: 1},
+    { i: 'uuid', x: 4, y: 13, w: 2, h: 1, static: true},
   ]);
 
 
@@ -46,15 +66,6 @@ const CertificateTemplate = () => {
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
-
-
-  const handleChangeOfCerti = (e) => {
-    const {name, value} = e.target;
-    setCertiData((prevData) => ({
-            ...prevData,
-            [name]: value,
-    }));
-  }
   const handleDragStop = (layout) => {
     console.log(layout);
     setLayout(layout);
@@ -80,8 +91,7 @@ const CertificateTemplate = () => {
       w: layoutItem.w,
       h: layoutItem.h
     };
-    
-    console.log(layoutItem);
+  
     // Update the layout with the new element
     setLayout([...layout, newLayoutItem]);
     console.log(`layout after drop: ${JSON.stringify(layout)}`)
@@ -95,25 +105,28 @@ const CertificateTemplate = () => {
         const element = printRef.current;
         const canvas = await html2canvas(element);
         const data = canvas.toDataURL('image/png');
-    
+        console.log(data);
         const pdf = new jsPDF();
         const imgProperties = pdf.getImageProperties(data);
+        console.log(imgProperties);
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight =
           (imgProperties.height * pdfWidth) / imgProperties.width;
-    
+        console.log(pdfHeight)
         pdf.addImage(data, 'PNG', 0, 0, pdfWidth, pdfHeight);
         pdf.save('print.pdf');
   };
+
+  
   return (
     <div className='w-full'>
     <Nav />
     <div className='flex flex-row w-screen h-screen mt-2 p-2'>
-        <div className='w-1/4'>
+        <div className='w-1/4 flex flex-col p-3'>
             <button onClick={handleDownloadPdf} type="button" className='button m-3'>Export PDF</button>
-            <p>You can add following extra text box in template:</p>
+            <p className='mt-10 mb-10'>You can add following extra text box in template:</p>
             <hr className='color-black'/>
-            <div {...getRootProps()}>
+            <div {...getRootProps()} className='w-32 h-32 border-2 '>
               <input {...getInputProps()} />
               {file ? (
                 <div
@@ -171,19 +184,23 @@ const CertificateTemplate = () => {
                 <img src={logo} alt='logo'/>
             </div>
             <div key="name" className='text-6xl font-cookie'>
-                <EditableText content={`<h1>${certiData.name}</h1>`} handleChange={handleChangeOfCerti}/>
+                <EditableText content={name} handleChange={(e) => setName(e.target.value)} />
             </div>
+            
             <div key="heading" className='text-5xl uppercase border-b-2 border-my-blue text-center'>
-                <EditableText content={`<h2>${certiData.heading}</h2>`} handleChange={handleChangeOfCerti}/>
+                <EditableText content={heading} handleChange={(e) => setHeading(e.target.value)}/>
             </div>
             <div key="subheading" className='text-lg border-t-4 border-my-blue border-dotted p-4 text-center'>
-                <EditableText content={`<p>${certiData.subheading} <b>${certiData.eventName}</b> on <b>${certiData.date}</b>.</p>`}  handleChange={handleChangeOfCerti}/>
+                <EditableText content={subheading}  handleChange={(e) => setSubheading(e.target.value)}/>
             </div>
             <div key="signature1" className='text-lg text-center border-t-4 border-my-blue'>
-                <EditableText content={`<p>${certiData.signature1}</p>`} handleChange={handleChangeOfCerti}/>
+                <EditableText content={signature1} handleChange={(e) => setSignature1(e.target.value)}/>
             </div>
             <div key="signature2" className='text-lg text-center border-t-4 border-my-blue'>
-                <EditableText content={`<p>${certiData.signature2}</p>`} handleChange={handleChangeOfCerti}/>
+                <EditableText content={signature2} handleChange={(e) => setSignature1(e.target.value)}/>
+            </div>
+            <div key='uuid' className='' >
+              {uuid}
             </div>
             {newAdded.map((item => {
               if(item.i === 'new-logo'){
@@ -195,7 +212,7 @@ const CertificateTemplate = () => {
               }else if(item.i === 'sub-heading-1' || item.i === 'sub-heading-2'){
                 return(
                   <div key={item.i} className='text-lg p-4 text-center'>
-                    <EditableText content="<p>Sub Heading</p>" />
+                    <EditableText content={"Sub Heading"} />
                   </div>
                 )
               }
