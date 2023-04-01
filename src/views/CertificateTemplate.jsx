@@ -199,9 +199,9 @@ const CertificateTemplate = () => {
             <div key="signature2" className='text-lg text-center border-t-4 border-my-blue'>
                 <EditableText content={signature2} handleChange={(e) => setSignature1(e.target.value)}/>
             </div>
-            <div key='uuid' className='' >
+            {/* <div key='uuid' className='' >
               {uuid}
-            </div>
+            </div> */}
             {newAdded.map((item => {
               if(item.i === 'new-logo'){
                 return(
