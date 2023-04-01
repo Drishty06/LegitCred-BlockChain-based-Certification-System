@@ -26,7 +26,7 @@
 * Using SHA-256, converting the blob to hash
 * Storing the hash on BlockChain
 * Using MongoDB stored and mapped Hash with the respective blob of the certificate.
-* Smart Contract Code: [Link](https://github.com/Drishty06/LegitCred-BlockChain-based-Certification-System/blob/main/previous%20approaches%20code/approach1_smart_contract.sol)
+* Smart Contract Code: [Link](https://github.com/Drishty06/LegitCred-BlockChain-based-Certification-System/blob/main/src/SmartContract/Certificate1.sol)
 
 ### Loopholes in this approach and suggestions by jury in evaluation round 1:
 * the approach of using blob and converting it into hash and using the hash to identify the certify is almost similar to web2
@@ -42,42 +42,30 @@
 * mapping tokenID with UUID
 * For verfication the user need to enter UUID and the required details
 * From UUID we get tokenID, from tokenID we get metadata, then we get metadata and compare it with the details entered by user
-* Smart Contract Code: [Link]()
+* Smart Contract Code: [Link](https://github.com/Drishty06/LegitCred-BlockChain-based-Certification-System/blob/main/src/SmartContract/certificate_with_uuid.sol)
 
 ### Loopholes in this approach and suggestions by jury in evaluation round 2:
 * No need of UUID, it can be fetched from tokenID and the link from NFT Marketplace 
 * form NFT Marketplace and every organization will have the certificates of participants stored on their wallet address 
 
-# Our Solution - LegitCred
-* LegitCred consists of mainly 3 sections:
-  1. Issue Certificate
-  2. Verify Certificate 
-  3. Retrieve Certificate
-
-
-## Issue Certificate
-* 
-
-## Verify Certificate
-
-
-## Retrieve Certificates
-*
+## 3. Approach without UUID
+* Implemented the suggestions in approach 2
+* Smart Contraact Code: [Link](https://github.com/Drishty06/LegitCred-BlockChain-based-Certification-System/blob/main/src/SmartContract/Certificate1.sol)
 
 
 # Technologies we used 👩🏻‍💻
+* BlockChain:
+  * NFTs
+  * ERC721URIStorage
+  * ERC721
+  * Solidity
+  * ether.js
+  * metamask
 * Frontend:
   * ReactJS
 * Backend:
   * Node.js
   * Express.js
-  * MongoDB
 
 
-# Project Timeline ⏰
-Description of the things performed before/during hack hours
-| Title | Timeline | Description |
-| --- | --- | --- |
-
-
-# Future Vision of Project LegitCred 📝
+# Glimpse of Project:
