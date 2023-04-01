@@ -96,22 +96,22 @@ const MyForm = ({ cmp }) => {
 
         setHaveCertificate(true);
 
-        const certificateFromPinata = await axios.get(
-            `https://gateway.pinata.cloud/ipfs/${res.data.IpfsHash}`,
-            {
-                headers: {
-                    pinata_api_key: "cf67719bb3526f5e84f5",
-                    pinata_secret_api_key:
-                        "9dc1e3c6369a24323f84246f6458d71017ff4f11340bcf362bdd5feceb0cac21",
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Headers": "*",
-                    "Content-Type": "application/json",
-                },
-            }
-        );
+        // const certificateFromPinata = await axios.get(
+        //     `https://gateway.pinata.cloud/ipfs/${res.data.IpfsHash}`,
+        //     {
+        //         headers: {
+        //             pinata_api_key: "cf67719bb3526f5e84f5",
+        //             pinata_secret_api_key:
+        //                 "9dc1e3c6369a24323f84246f6458d71017ff4f11340bcf362bdd5feceb0cac21",
+        //             "Access-Control-Allow-Origin": "*",
+        //             "Access-Control-Allow-Headers": "*",
+        //             "Content-Type": "application/json",
+        //         },
+        //     }
+        // );
 
-        setHaveCertificate(certificateFromPinata.data);
-        console.log(certificateFromPinata.data);
+        // setHaveCertificate(certificateFromPinata.data);
+        // console.log(certificateFromPinata.data);
         console.log("certificate");
 
         // Append the Blob object to the FormData object with a filename
@@ -228,9 +228,11 @@ const MyForm = ({ cmp }) => {
                     </div>
                 </form>
             </div>
-            <iframe
-                src={`data:application/pdf;base64,${haveCertificate}`}
-                frameBorder='0'></iframe>
+            {/* {haveCertificate !== "" && (
+                <iframe
+                    src={`data:application/pdf;base64,${haveCertificate}`}
+                    frameBorder='0'></iframe>
+            )} */}
         </div>
     );
 };
