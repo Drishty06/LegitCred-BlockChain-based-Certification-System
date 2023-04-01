@@ -2,6 +2,7 @@
 ### "Certify with Confidence!"
 
 * Features
+* Approaches 
 * Our Solution - LegitCred 🚀
 * Technologies we used 👩🏻‍💻
 * Project Timeline ⏰
@@ -9,12 +10,14 @@
 * Glimpse of Project LegitCred ✨
 
 # Features:
-1. Issue Certificate: issue the certificates to the list of participants for the particular event under an organization and store them securely over blockchain
-2. Verify Certificates: Verify the Certificates with the unique hash and find if it is present in the blockchain
-3. Retrieve Certificate: Misplaced Certificates can be fetched again
-4. Editable Templates: Templates can either be used from external sources or the existing template on the web-app can be used directly
-5. Integrating with existing applications: API endpoints will be provided 
-6. Bulk Mailing: Sending mails of certificates to the list of participants
+1. Use of blockchain to create immutable and tamper-proof records
+2. NFT is created for every certificate and the metadata associated with it contains the data of participant
+3. The organization's wallet address is used to store all NFTs belonging to that organization.
+4. Participants can claim ownership of their NFTs by connecting their wallets to the NFT marketplace and if they don't have wallets set up they can simply look from nft marketplace of organization
+5. Certificates can simply be verified having the given URL
+5. Easy access to verified certificates for organizations and their participants
+6. Editable template given on the web-app where the user can drag and drop elements and change the values and update certificate template according to their use
+7. To integrate LegitCred with existing traditional systems, API endpoints are provided
 
 # Our Solution - LegitCred
 * LegitCred consists of mainly 3 sections:
