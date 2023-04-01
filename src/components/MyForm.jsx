@@ -2,38 +2,22 @@ import React, { useState, useRef } from "react";
 import Papa from "papaparse";
 import certificate from "../assets/certificate_form.png";
 import { PDFDocument } from "pdf-lib";
+import axios from "axios";
+import FormData from "form-data";
+import { mintNFT } from "../SmartContract";
 
 const MyForm = ({ cmp }) => {
     const [organization, setOrganization] = useState("");
     const [event, setEvent] = useState("");
-    const [CSVName, setCSVName] = useState("");
+    const [participantName, setParticipantName] = useState("");
     const [certificateName, setCertificateName] = useState("");
-    const [csvData, setCSVData] = useState({});
     const [pdfData, setPDFData] = useState([]);
-    const csvInput = useRef();
     const certificateInput = useRef();
 
-    const handleCSVInput = (e) => {
-        e.preventDefault();
-        csvInput.current.click();
-    };
+    const [haveCertificate, setHaveCertificate] = useState("");
 
-    const handleCSVChange = (event) => {
-        const csvFile = event.target.files[0];
-        console.log(csvFile);
-        setCSVName(csvFile.name);
-
-        // Parse CSV File
-        Papa.parse(csvFile, {
-            header: true,
-            skipEmptyLines: true,
-            complete: function (results) {
-                console.log(results.data);
-
-                setCSVData(results.data);
-            },
-        });
-    };
+    const [certificateCID, setCertificateCID] = useState("");
+    const [jsonCID, setJsonCID] = useState("");
 
     const handleCertificateInput = (e) => {
         e.preventDefault();
@@ -48,31 +32,107 @@ const MyForm = ({ cmp }) => {
         reader.readAsDataURL(certificate); // Read Certificate
         reader.onloadend = function () {
             // console.log(reader.result);
-            PDFDocument.load(reader.result).then(async (pdfDoc) => {
-                const pages = pdfDoc.getPages(); // get pages in certificate
-                console.log(pages);
-
-                const myPDF = [];
-                for (var i = 0; i < pages.length; i++) {
-                    const pdfDoc1 = await PDFDocument.create(); // initilize new pdf
-                    var copied = await pdfDoc1.copyPages(pdfDoc, [i]); // copy ith page
-                    const [data] = copied;
-                    pdfDoc1.addPage(data); // add page to new pdf
-                    const pdfBytes = await pdfDoc1.save(); // save new pdf
-                    myPDF.push(pdfBytes.toString()); // store bytes to pdf
-                }
-                console.log(myPDF);
-                setPDFData(myPDF);
-            });
+            setPDFData(reader.result);
         };
 
         setCertificateName(certificate.name);
     };
 
+    const dataURItoBlob = () => {
+        // Split the Data URI into metadata and data
+        const [metadata, data] = pdfData.split(",");
+
+        // Decode the base64-encoded data
+        const decodedData = atob(data);
+
+        // Convert the decoded data to an array buffer
+        const arrayBuffer = new ArrayBuffer(decodedData.length);
+        const uint8Array = new Uint8Array(arrayBuffer);
+
+        for (let i = 0; i < decodedData.length; i++) {
+            uint8Array[i] = decodedData.charCodeAt(i);
+        }
+
+        // Create a Blob object from the array buffer
+        const blob = new Blob([uint8Array], {
+            type: metadata.split(";")[0].split(":")[1],
+        });
+
+        return blob;
+    };
+
+    const postCertificateToPinata = async (formData) => {
+        console.log(formData, "formData");
+        // Set your API key and secret key
+        const API_KEY = "cf67719bb3526f5e84f5";
+        const SECRET_KEY =
+            "9dc1e3c6369a24323f84246f6458d71017ff4f11340bcf362bdd5feceb0cac21";
+        // Set the API endpoint URL
+        const url = "https://api.pinata.cloud/pinning/pinFileToIPFS";
+
+        // Set the headers with the API key and secret key
+        const headers = {
+            "Content-Type": `multipart/form-data; boundary=${formData._boundary}`,
+            pinata_api_key: API_KEY,
+            pinata_secret_api_key: SECRET_KEY,
+        };
+
+        const mataData = {
+            name: participantName,
+            issue_date: new Date().toISOString(),
+            organization,
+            event,
+        };
+        const res = await axios.post(url, formData, { headers });
+
+        setCertificateCID(res.data.IpfsHash);
+
+        // store json data
+        const jsonForm = new FormData();
+        // Create a new Blob object from the JSON data
+        const blob = new Blob([JSON.stringify(mataData)], {
+            type: "application/json",
+        });
+
+        setHaveCertificate(true);
+
+        const certificateFromPinata = await axios.get(
+            `https://gateway.pinata.cloud/ipfs/${res.data.IpfsHash}`,
+            {
+                headers: {
+                    pinata_api_key: "cf67719bb3526f5e84f5",
+                    pinata_secret_api_key:
+                        "9dc1e3c6369a24323f84246f6458d71017ff4f11340bcf362bdd5feceb0cac21",
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Headers": "*",
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+
+        setHaveCertificate(certificateFromPinata.data);
+        console.log(certificateFromPinata.data);
+        console.log("certificate");
+
+        // Append the Blob object to the FormData object with a filename
+        jsonForm.append("file", blob, certificateName + ".json");
+        const jsonRes = await axios.post(url, jsonForm, { headers });
+
+        setJsonCID(jsonRes.data.IpfsHash);
+
+        mintNFT(jsonRes.data.IpfsHash, res.data.IpfsHash);
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
         // call backend api here and pass data of csv from csvData StateVariable
-        console.log(csvData);
+        const blob = dataURItoBlob();
+
+        const formData = new FormData();
+        formData.append("file", blob, certificateName);
+
+        postCertificateToPinata(formData);
+
         console.log(pdfData);
     };
     return (
@@ -117,33 +177,18 @@ const MyForm = ({ cmp }) => {
                             placeholder='Event Name'
                         />
                     </div>
-                    {cmp === "issue" && (
-                        <div className='flex flex-col mt-5'>
-                            <label htmlFor='event_name'>
-                                Participants Details
-                            </label>
-                            <input
-                                className='hidden'
-                                type='file'
-                                id='csvFile'
-                                accept='.csv'
-                                onChange={(e) => handleCSVChange(e)}
-                                ref={csvInput}
-                            />
-                            <div className='flex'>
-                                <button
-                                    className='bg-gray-300 p-2 w-32 rounded-l-lg'
-                                    onClick={(e) => handleCSVInput(e)}>
-                                    Choose file
-                                </button>
-                                <span className='rounded-r-lg w-full p-3 bg-gray-100 overflow-x-hidden'>
-                                    {CSVName === ""
-                                        ? "Upload CSV File"
-                                        : CSVName}
-                                </span>
-                            </div>
-                        </div>
-                    )}
+                    <div className='flex flex-col mt-5'>
+                        <label htmlFor='event_name'>Participants Name</label>
+                        <input
+                            className='p-2 bg-gray-100 rounded-lg outline-my-purple mt-1'
+                            type='text'
+                            onChange={(e) => setParticipantName(e.target.value)}
+                            value={participantName}
+                            id='participant_name'
+                            name='participant_name'
+                            placeholder='Enter Your Name'
+                        />
+                    </div>
                     <div className='flex flex-col mt-5'>
                         <label htmlFor='event_name'>Certificates</label>
                         <input
@@ -183,6 +228,9 @@ const MyForm = ({ cmp }) => {
                     </div>
                 </form>
             </div>
+            <iframe
+                src={`data:application/pdf;base64,${haveCertificate}`}
+                frameBorder='0'></iframe>
         </div>
     );
 };
