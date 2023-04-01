@@ -66,6 +66,13 @@
 * Backend:
   * Node.js
   * Express.js
+* APIs Used
+  * Pinata Web3 Platform
+  * IPFS Decentrailized storage  
 
 
 # Glimpse of Project:
+![alt text](https://github.com/Drishty06/LegitCred-BlockChain-based-Certification-System/blob/main/images/image4.png)
+![alt text](https://github.com/Drishty06/LegitCred-BlockChain-based-Certification-System/blob/main/images/image3.png)
+![alt text](https://github.com/Drishty06/LegitCred-BlockChain-based-Certification-System/blob/main/images/image2.png)
+![alt text](https://github.com/Drishty06/LegitCred-BlockChain-based-Certification-System/blob/main/images/image1.png)
