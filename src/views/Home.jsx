@@ -39,7 +39,7 @@ const Home = () => {
                             alt=''
                         />
                     </Link>
-                    <Link to={"/verify-certificate"}>
+                    <Link to={"/certificates"}>
                         <img
                             className='h-80 w-80 hover:scale-105 hover:rotate-12 hover:cursor-pointer ease-in duration-150 rounded-full'
                             src={verify}

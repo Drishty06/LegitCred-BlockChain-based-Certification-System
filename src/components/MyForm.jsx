@@ -1,20 +1,19 @@
 import React, { useState, useRef } from "react";
-import Papa from "papaparse";
 import certificate from "../assets/certificate_form.png";
-import { PDFDocument } from "pdf-lib";
 import axios from "axios";
 import FormData from "form-data";
 import { mintNFT } from "../SmartContract";
 
+// dotenv.config();
+
 const MyForm = ({ cmp }) => {
+    console.log(import.meta.env.VITE_API_KEY);
     const [organization, setOrganization] = useState("");
     const [event, setEvent] = useState("");
     const [participantName, setParticipantName] = useState("");
     const [certificateName, setCertificateName] = useState("");
     const [pdfData, setPDFData] = useState([]);
     const certificateInput = useRef();
-
-    const [haveCertificate, setHaveCertificate] = useState("");
 
     const [certificateCID, setCertificateCID] = useState("");
     const [jsonCID, setJsonCID] = useState("");
@@ -64,9 +63,8 @@ const MyForm = ({ cmp }) => {
     const postCertificateToPinata = async (formData) => {
         console.log(formData, "formData");
         // Set your API key and secret key
-        const API_KEY = "cf67719bb3526f5e84f5";
-        const SECRET_KEY =
-            "9dc1e3c6369a24323f84246f6458d71017ff4f11340bcf362bdd5feceb0cac21";
+        const API_KEY = import.meta.env.VITE_API_KEY;
+        const SECRET_KEY = import.meta.env.VITE_SECRET_KEY;
         // Set the API endpoint URL
         const url = "https://api.pinata.cloud/pinning/pinFileToIPFS";
 
@@ -93,26 +91,6 @@ const MyForm = ({ cmp }) => {
         const blob = new Blob([JSON.stringify(mataData)], {
             type: "application/json",
         });
-
-        setHaveCertificate(true);
-
-        // const certificateFromPinata = await axios.get(
-        //     `https://gateway.pinata.cloud/ipfs/${res.data.IpfsHash}`,
-        //     {
-        //         headers: {
-        //             pinata_api_key: "cf67719bb3526f5e84f5",
-        //             pinata_secret_api_key:
-        //                 "9dc1e3c6369a24323f84246f6458d71017ff4f11340bcf362bdd5feceb0cac21",
-        //             "Access-Control-Allow-Origin": "*",
-        //             "Access-Control-Allow-Headers": "*",
-        //             "Content-Type": "application/json",
-        //         },
-        //     }
-        // );
-
-        // setHaveCertificate(certificateFromPinata.data);
-        // console.log(certificateFromPinata.data);
-        console.log("certificate");
 
         // Append the Blob object to the FormData object with a filename
         jsonForm.append("file", blob, certificateName + ".json");
@@ -228,11 +206,12 @@ const MyForm = ({ cmp }) => {
                     </div>
                 </form>
             </div>
-            {/* {haveCertificate !== "" && (
+            {certificateCID !== "" && (
                 <iframe
-                    src={`data:application/pdf;base64,${haveCertificate}`}
-                    frameBorder='0'></iframe>
-            )} */}
+                    src={`https://gateway.pinata.cloud/ipfs/${certificateCID}`}
+                    frameBorder='0'
+                    height='100%'></iframe>
+            )}
         </div>
     );
 };

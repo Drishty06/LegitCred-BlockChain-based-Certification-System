@@ -5,7 +5,7 @@ import Nav from "../components/Nav";
 const Verify = () => {
     return (
         <div>
-            <Nav cmp={"verify"} />
+            <Nav cmp={"certificates"} />
             <div className='flex justify-center mt-10'>
                 <MyForm cmp={"verify"} />
             </div>

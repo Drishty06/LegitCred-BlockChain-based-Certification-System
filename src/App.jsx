@@ -14,17 +14,20 @@ const App = () => {
                     <Route path='/'>
                         <Route index element={<Home />} />
                         <Route path='issue-certificate' element={<Issue />} />
-                        <Route path='verify-certificate' element={<Verify />} />
+                        <Route path='certificates' element={<Verify />} />
                         <Route
                             path='retrieve-certificate'
                             element={<Retrieve />}
                         />
-                        <Route path="editCerti" element={<CertificateTemplate />}/>
+                        <Route
+                            path='editCerti'
+                            element={<CertificateTemplate />}
+                        />
                     </Route>
                 </Routes>
             </BrowserRouter>
         </>
-    )
-}
+    );
+};
 
 export default App;

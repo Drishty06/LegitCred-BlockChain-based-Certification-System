@@ -43,22 +43,14 @@ export const verifyCertificates = async (organization, event, certificates) => {
     );
     console.log(certificates[0]);
 
-    // await res.wait();
-
     console.log(res);
 };
 
 export const mintNFT = async (json, certificate) => {
-    // const res = await sendContractData.set_record(
-    //     organization,
-    //     event,
-    //     certificates
-    // );
-
     console.log(json, certificate);
     console.log(json + "," + certificate);
     const res = await sendContractData.mint(
-        "0x1fB06aff012815596121bFd86dD30B67fd3E54E0",
+        "0x1fB06aff012815596121bFd86dD30B67fd3E54E0", // recipant Address
         json + "," + certificate
     );
 
