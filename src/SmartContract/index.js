@@ -1,6 +1,6 @@
 import contract from "./abi.json";
 import { ethers } from "ethers";
-const contractAddress = "0x2804890391df306A55049913cED665d9FE5D7ba8";
+const contractAddress = "0x797FeF2D52A89EE55a42E8d04ae2d909191806D9";
 
 const infuraProvider = new ethers.providers.JsonRpcProvider(
     "https://eth-sepolia.g.alchemy.com/v2/zEotRHIHt762GqCfnaj6tDD0ZH-GswVB"
@@ -18,7 +18,7 @@ const sendContractData = new ethers.Contract(
     walletProvider.getSigner()
 );
 
-const requestAccount = async () => {
+export const requestAccount = async () => {
     await ethereum.request({
         method: "wallet_requestPermissions",
         params: [
@@ -35,20 +35,24 @@ const requestAccount = async () => {
     setAddress(accounts[0]);
 };
 
-export const verifyCertificates = async (organization, event, certificates) => {
-    const res = await getContractData.is_cerificate_verified(
-        organization,
-        event,
-        certificates[0]
-    );
-    console.log(certificates[0]);
+export const getCount = async () => {
+    const res = await getContractData.getCount();
 
-    console.log(res);
+    // console.log(res.toNumber());
+    return res.toNumber();
+};
+
+export const getMetaData = async (tokenId) => {
+    console.log("calling metadata");
+    const res = await getContractData.getMetaData(tokenId);
+
+    // console.log(res);
+    return res;
 };
 
 export const mintNFT = async (json, certificate) => {
-    console.log(json, certificate);
-    console.log(json + "," + certificate);
+    console.log("Minting NFT");
+    console.log(json + "," + certificate + "JSON,CERTIFICATe");
     const res = await sendContractData.mint(
         "0x1fB06aff012815596121bFd86dD30B67fd3E54E0", // recipant Address
         json + "," + certificate
@@ -57,4 +61,6 @@ export const mintNFT = async (json, certificate) => {
     await res.wait();
 
     console.log(res);
+    console.log(res.value);
+    console.log(res.value.toNumber());
 };

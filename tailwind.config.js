@@ -10,8 +10,8 @@ module.exports = {
                 "my-light-blue": "#8AC7EA",
             },
             fontFamily: {
-                'cookie': ['Cookie', 'cursive'],
-            }
+                cookie: ["Cookie", "cursive"],
+            },
         },
     },
     plugins: [],

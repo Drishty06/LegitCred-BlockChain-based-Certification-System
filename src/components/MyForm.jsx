@@ -7,7 +7,6 @@ import { mintNFT } from "../SmartContract";
 // dotenv.config();
 
 const MyForm = ({ cmp }) => {
-    console.log(import.meta.env.VITE_API_KEY);
     const [organization, setOrganization] = useState("");
     const [event, setEvent] = useState("");
     const [participantName, setParticipantName] = useState("");
@@ -25,12 +24,10 @@ const MyForm = ({ cmp }) => {
 
     const handleCertificateChange = (event) => {
         const certificate = event.target.files[0];
-        console.log(certificate);
 
         const reader = new FileReader();
         reader.readAsDataURL(certificate); // Read Certificate
         reader.onloadend = function () {
-            // console.log(reader.result);
             setPDFData(reader.result);
         };
 
@@ -61,7 +58,7 @@ const MyForm = ({ cmp }) => {
     };
 
     const postCertificateToPinata = async (formData) => {
-        console.log(formData, "formData");
+        console.log("Posting on pinata");
         // Set your API key and secret key
         const API_KEY = import.meta.env.VITE_API_KEY;
         const SECRET_KEY = import.meta.env.VITE_SECRET_KEY;
@@ -110,8 +107,6 @@ const MyForm = ({ cmp }) => {
         formData.append("file", blob, certificateName);
 
         postCertificateToPinata(formData);
-
-        console.log(pdfData);
     };
     return (
         <div className='flex items-center rounded-l-lg w-3/4 bg-[#ECECEC]'>
