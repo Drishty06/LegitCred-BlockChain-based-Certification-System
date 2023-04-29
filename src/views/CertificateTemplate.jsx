@@ -3,10 +3,9 @@ import { Responsive, WidthProvider } from "react-grid-layout";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import html2canvas from "html2canvas";
-// import { v5 as uuidv5 } from 'uuid';
 import { jsPDF } from "jspdf";
 import { useDropzone } from "react-dropzone";
-
+import Axios from "axios";
 import EditableText from "../components/Editable_text";
 import Nav from "../components/Nav";
 
@@ -25,25 +24,6 @@ const CertificateTemplate = () => {
     );
     const [signature1, setSignature1] = useState("signature1");
     const [signature2, setSignature2] = useState("signature2");
-
-    // const generateUUID = () => {
-    //     // Define a namespace UUID based on a unique string
-    //     const namespace = "your-namespace-uuid";
-    //     // const namespaceUUID = uuidv5(namespace, uuidv5.DNS);
-
-    //     const timestamp = Date.now().toString();
-
-    //     // Generate UUID using the combination of variables and namespace UUID
-    //     // const id = uuidv5(`${name}-${subheading}-${timestamp}`, namespaceUUID);
-
-    //     console.log(id);
-    //     return id;
-    // };
-
-    // const [uuid, setUuid] = useState(generateUUID);
-    // useEffect(() => {
-    //     setUuid(generateUUID);
-    // }, [name, subheading]);
 
     const [dropName, setDropName] = useState("");
     const [newAdded, setNewAdded] = useState([]);
@@ -99,20 +79,51 @@ const CertificateTemplate = () => {
     };
 
     //------------------- for downloading pdf----------------------------------------------------------------------------------------------
-    const handleDownloadPdf = async () => {
+    const handleDownloadPdf = async() => {
         const element = printRef.current;
         const canvas = await html2canvas(element);
         const data = canvas.toDataURL("image/png");
-        console.log(data);
+        //console.log(data);
         const pdf = new jsPDF();
         const imgProperties = pdf.getImageProperties(data);
-        console.log(imgProperties);
+        //console.log(imgProperties);
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight =
             (imgProperties.height * pdfWidth) / imgProperties.width;
         console.log(pdfHeight);
         pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight);
+        const pdfBlock = pdf.output('blob');
         pdf.save("print.pdf");
+        // console.log(pdfBlock);
+        const formData = new FormData();
+        formData.append("pdf", pdfBlock, "print.pdf");
+        
+        console.log(formData.get('pdf'));
+
+        // fetch("http://localhost:5000/upload", {
+        //     method: "POST",
+        //     body: formData,
+        //     headers: {
+        //         "Content-Type": "multipart/form-data;boundary=---WebKitFormBoundary7MA4YWxkTrZu0gW",
+        //     },
+        //   })
+        //   .then((response) => {
+        //     console.log(response);
+        //   })
+        //   .catch((error) => {
+        //     console.error(error);
+        //   });
+
+        
+        const headers = {
+        'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundarydMIgtiA2YeB1Z0kl',
+        };
+
+        Axios.post("http://localhost:5000/upload", formData)
+        .then((res) => {
+            console.log("Success ", res);
+        });
+        
     };
 
     return (
