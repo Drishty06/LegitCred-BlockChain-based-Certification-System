@@ -84,13 +84,17 @@ const CertificateTemplate = () => {
         const canvas = await html2canvas(element);
         const data = canvas.toDataURL("image/png");
         //console.log(data);
-        const pdf = new jsPDF();
+        const pdf = new jsPDF('landscape');
         const imgProperties = pdf.getImageProperties(data);
         //console.log(imgProperties);
         const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight =
+       
+
+        let pdfHeight =
             (imgProperties.height * pdfWidth) / imgProperties.width;
+        
         console.log(pdfHeight);
+        
         pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight);
         const pdfBlock = pdf.output('blob');
         pdf.save("print.pdf");
