@@ -17,23 +17,23 @@ const App = () => {
     const myFun = async () => {
         // requestAccount();
         const count = await getCount();
-        // const organizations = new Set();
+        const organizations = new Set();
         
         for (let tokenId = 1; tokenId <= count; tokenId++) {
-            getMetaData(tokenId)
-            
-                .then((result) => {
+            // while(count1!=count){
+            getMetaData(tokenId).then((result) => {
                     console.log("count = " + tokenId);
                     console.log(result);
                     const [jsonCID, CertificateCID] = result.split(",");
 
                     // console.log(jsonCID, CertificateCID);
-                    axios
-                        .get(`https://gateway.pinata.cloud/ipfs/${jsonCID}`,{
-                            // headers:{
-                            // "x-frame-options":"allow"
-                            // }
-                        })
+                    // axios
+                    //     .get(`https://gateway.pinata.cloud/ipfs/${jsonCID}`,{
+                    //         // headers:{
+                    //         // "x-frame-options":"allow"
+                    //         // }
+                    //     })
+                    axios.get(`https://ipfs.io/ipfs/${jsonCID}`)
                         .then((response) => {
                             // console.log(response.data);
                             // organizations.add(response.data.organization);
@@ -44,15 +44,17 @@ const App = () => {
                                     id: tokenId,
                                 })
                             );
+                            // setCount1((e)=>e+1);
                         })
                         .catch((error) => console.error(error));
                 })
                 .catch((err) => {
                     console.log(err);
                 });
-                
+            
+                setTimeout(()=>{},1000)
         }
-        // dispatch(certificateActions.setOrganizations([...organizations]));
+        dispatch(certificateActions.setOrganizations([...organizations]));
     };
     useEffect(() => {
         myFun();
