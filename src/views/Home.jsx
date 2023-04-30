@@ -1,12 +1,12 @@
 import React from "react";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 
 import Nav from "../components/Nav";
 import homeLight from "../assets/homepage light.gif";
 import trophy from "../assets/homepage trophy light.png";
-import issue from "../assets/issue blue.png";
-import verify from "../assets/verify blue.png";
-import retrieve from "../assets/retrieve blue.png";
+// import issue from "../assets/issue blue.png";
+// import verify from "../assets/verify blue.png";
+// import retrieve from "../assets/retrieve blue.png";
 import grid from "../assets/grid.png";
 const Home = () => {
     return (
@@ -30,7 +30,7 @@ const Home = () => {
                 </div>
             </div>
 
-            <div className='bg-my-blue my-10 h-[100vh]' id='services'>
+            {/* <div className='bg-my-blue my-10 h-[100vh]' id='services'>
                 <div className='flex flex-wrap justify-evenly h-96 items-center'>
                     <Link to={"/issue-certificate"}>
                         <img
@@ -100,7 +100,7 @@ const Home = () => {
                         just few seconds.
                     </p>
                 </div>
-            </div>
+            </div> */}
         </div>
     );
 };

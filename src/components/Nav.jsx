@@ -25,13 +25,13 @@ const Nav = ({ cmp }) => {
                 }`}>
                 Certificates
             </Link>
-            <Link
+            {/* <Link
                 to={"/retrieve-certificate"}
                 className={`mx-8 hover:text-[#2104ae] hover:cursor-pointer ${
                     cmp === "retrieve" ? "underline" : ""
                 }`}>
                 Retrieve Certificate
-            </Link>
+            </Link> */}
         </div>
     );
 };
