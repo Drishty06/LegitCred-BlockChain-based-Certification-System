@@ -70,6 +70,7 @@ const MyForm = ({ cmp }) => {
             "Content-Type": `multipart/form-data; boundary=${formData._boundary}`,
             pinata_api_key: API_KEY,
             pinata_secret_api_key: SECRET_KEY,
+            "X-frame-options":"Allow"
         };
 
         const mataData = {
